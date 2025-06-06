@@ -1,1 +1,1 @@
-# eslint-plugin-implements
+# eslint-plugin-type-implements-interface
