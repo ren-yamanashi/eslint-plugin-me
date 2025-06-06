@@ -2,7 +2,7 @@ import { ESLintUtils } from '@typescript-eslint/utils';
 import { InterfaceDeclaration, Node, Program } from 'typescript';
 import { SYMBOL_FLAGS } from '../constants/ts-internal-flags';
 import { extractImplementsTypeNamesFromJsdoc } from '../utils/extract-implements-type-names';
-import { findMissingProperties } from '../utils/find-missing-properties';
+import { findIncompatibleProperties, findMissingProperties } from '../utils/find-properties';
 
 type InterfaceInfo = {
   readonly name: string;
@@ -22,6 +22,8 @@ export const jsdocRule = ESLintUtils.RuleCreator.withoutDocs({
         "Property '{{propertyName}}' is missing in type '{{typeName}}' but required by interface '{{interfaceName}}'",
       interfaceNotFound:
         "Interface '{{interfaceName}}' specified in @implements tag was not found in the project",
+      wrongType:
+        "Property '{{propertyName}}' has type '{{actualType}}' but interface '{{interfaceName}}' expects '{{expectedType}}'",
     },
     schema: [],
   },
@@ -51,14 +53,34 @@ export const jsdocRule = ESLintUtils.RuleCreator.withoutDocs({
         const implementationType = parserServices.getTypeAtLocation(node);
         const interfaceType = checker.getTypeAtLocation(targetInterface.node);
 
+        // NOTE: check missing properties
         const missingProps = findMissingProperties(implementationType, interfaceType, checker);
-        for (const propName of missingProps) {
+        for (const prop of missingProps) {
           context.report({
             node,
             messageId: 'missingProperty',
             data: {
-              propertyName: propName.name,
+              propertyName: prop.name,
               typeName: node.id.name,
+              interfaceName: implementsTypeName,
+            },
+          });
+        }
+
+        // NOTE: check incompatible properties
+        const incompatibleProps = findIncompatibleProperties(
+          implementationType,
+          interfaceType,
+          checker,
+        );
+        for (const prop of incompatibleProps) {
+          context.report({
+            node,
+            messageId: 'wrongType',
+            data: {
+              propertyName: prop.name,
+              actualType: prop.actual,
+              expectedType: prop.expected,
               interfaceName: implementsTypeName,
             },
           });
