@@ -19,6 +19,6 @@
     "module": "ESNext",
     "moduleResolution": "bundler"
   },
-  "include": ["src"],
+  "include": ["src", "src/utils/.gitkeep"],
   "exclude": ["dist", "node_modules"]
 }
