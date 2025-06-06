@@ -6,5 +6,4 @@ export default defineConfig({
   clean: true,
   format: ['esm', 'cjs'],
   dts: true,
-  outputOptions: { exports: 'named' },
 });
