@@ -24,10 +24,10 @@
     "pack": "pnpm run build && npm pack"
   },
   "devDependencies": {
+    "@eslint/js": "^9.28.0",
     "@types/node": "^22.15.30",
     "@typescript-eslint/rule-tester": "^8.33.1",
-    "eslint": "9.22.0",
-    "eslint-plugin-import": "^2.31.0",
+    "eslint": "9.28.0",
     "prettier": "4.0.0-alpha.12",
     "tsdown": "^0.12.7",
     "typescript": "^5.8.3",
