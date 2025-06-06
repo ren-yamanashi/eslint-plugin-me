@@ -1,0 +1,32 @@
+{
+  "cSpell.words": ["tsdown", "TSES", "vitest", "yamanashi"],
+  "editor.tabSize": 2,
+
+  // lint settings
+  "eslint.useFlatConfig": true,
+
+  // auto format setting
+  "editor.codeActionsOnSave": ["source.organizeImports", "source.fixAll.eslint"],
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "javascript.preferences.importModuleSpecifier": "relative",
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "javascript.preferences.quoteStyle": "single",
+  "typescript.preferences.quoteStyle": "single",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+
+  // GitHub Copilot settings
+  "chat.renderRelatedFiles": true,
+  "chat.agent.enabled": true,
+  "chat.mcp.discovery.enabled": true,
+  "github.copilot.chat.codesearch.enabled": true,
+  "github.copilot.chat.edits.temporalContext.enabled": true,
+  "github.copilot.chat.newWorkspaceCreation.enabled": true,
+  "github.copilot.chat.search.semanticTextResults": true,
+  "github.copilot.nextEditSuggestions.enabled": true,
+  "github.copilot.chat.agent.runTasks": true,
+  "github.copilot.chat.agent.thinkingTool": true,
+  "github.copilot.editor.enableCodeActions": true,
+  "github.copilot.chat.generateTests.codeLens": true,
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true
+}

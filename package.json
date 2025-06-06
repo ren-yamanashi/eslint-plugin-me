@@ -1,0 +1,54 @@
+{
+  "name": "eslint-plugin-implements",
+  "version": "0.1.0",
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "require": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.cjs"
+    },
+    "import": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "scripts": {
+    "build": "tsdown --config tsdown.config.js",
+    "test": "vitest --run",
+    "lint": "eslint --fix --config eslint.config.js",
+    "fmt": "prettier --write \"**/*.{js,json,ts}\" --ignore-path .gitignore",
+    "typecheck": "tsc --noEmit",
+    "pack": "pnpm run build && npm pack"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.30",
+    "@typescript-eslint/rule-tester": "^8.33.1",
+    "eslint": "9.22.0",
+    "eslint-plugin-import": "^2.31.0",
+    "prettier": "4.0.0-alpha.12",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.33.1",
+    "vitest": "^3.2.2"
+  },
+  "dependencies": {
+    "@typescript-eslint/parser": "^8.33.1",
+    "@typescript-eslint/utils": "^8.33.1"
+  },
+  "files": [
+    "dist",
+    "src",
+    "!src/__tests__",
+    "README.md",
+    "LICENSE"
+  ],
+  "author": {
+    "name": "ren-yamanashi"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT"
+}
