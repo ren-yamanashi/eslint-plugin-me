@@ -11,7 +11,6 @@ export const extractImplementsTypeNamesFromJsdoc = (
 ): string | null => {
   const comments = getComment(node, sourceCode);
 
-  // TODO: Handling of multiple `@implements`
   const implementsComment = comments.find(
     comment => comment.type === AST_TOKEN_TYPES.Block && comment.value.includes('@implements'),
   );
@@ -19,6 +18,7 @@ export const extractImplementsTypeNamesFromJsdoc = (
   if (!implementsComment) return null;
 
   // NOTE: Extract TypeName from `@implements {TypeName}`
+  // TODO: Handling of multiple TypeName in `@implements` (e.g, `@implements {TypeName1 & TypeName2}`)
   const implementsRegex = /@implements\s*\{\s*([^}]+)\s*\}/;
   const implementsMatch = implementsRegex.exec(implementsComment.value);
   const typeName = implementsMatch?.[1]?.trim();
