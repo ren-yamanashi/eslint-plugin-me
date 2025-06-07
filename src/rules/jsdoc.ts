@@ -35,7 +35,9 @@ export const jsdocRule = ESLintUtils.RuleCreator.withoutDocs({
         if (!implementsTypeName) return;
 
         // NOTE: check if the interface exists
-        const targetInterface = allInterfaces.find(({ name }) => name.text === implementsTypeName);
+        // Extract base interface name (remove generic type parameters)
+        const baseInterfaceName = extractBaseInterfaceName(implementsTypeName);
+        const targetInterface = allInterfaces.find(({ name }) => name.text === baseInterfaceName);
         if (!targetInterface) {
           context.report({
             node,
@@ -84,6 +86,16 @@ export const jsdocRule = ESLintUtils.RuleCreator.withoutDocs({
     };
   },
 });
+
+/**
+ * Extract base interface name from generic type specification
+ * @param typeName - Type name that might include generic parameters (e.g., "MyInterface<string>")
+ * @returns Base interface name without generic parameters (e.g., "MyInterface")
+ */
+const extractBaseInterfaceName = (typeName: string): string => {
+  const genericIndex = typeName.indexOf('<');
+  return genericIndex === -1 ? typeName : typeName.substring(0, genericIndex);
+};
 
 const collectAllInterfaces = (program: Program): readonly InterfaceDeclaration[] => {
   return program

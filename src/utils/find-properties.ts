@@ -1,4 +1,4 @@
-import { Type, TypeChecker } from 'typescript';
+import { Type, TypeChecker, TypeFlags } from 'typescript';
 
 type PropertyInfo = {
   name: string;
@@ -44,7 +44,24 @@ export const findIncompatibleProperties = (
     (acc, reqProp) => {
       const implProp = implProps.find(({ name }) => name === reqProp.name);
       if (!implProp) return acc; // skip if property is not implemented
-      if (checker.isTypeAssignableTo(implProp.type, reqProp.type)) return acc; // skip reqProps type equal to implProp type
+
+      // NOTE: Check if the interface type is a Union type
+      const isInterfaceUnion = !!(reqProp.type.flags & TypeFlags.Union);
+
+      const isCompatible = (() => {
+        if (isInterfaceUnion) {
+          // NOTE: For Union types, allow partial matches (implementation can be a subset)
+          return (
+            checker.isTypeAssignableTo(implProp.type, reqProp.type) ||
+            checker.isTypeAssignableTo(reqProp.type, implProp.type)
+          );
+        }
+        // NOTE: For non-Union types, only allow normal assignability
+        return checker.isTypeAssignableTo(implProp.type, reqProp.type);
+      })();
+
+      if (isCompatible) return acc; // skip if types are compatible
+
       return [
         ...acc,
         {
