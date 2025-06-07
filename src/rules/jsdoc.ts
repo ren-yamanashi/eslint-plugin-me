@@ -4,12 +4,6 @@ import { SYMBOL_FLAGS } from '../constants/ts-internal-flags';
 import { extractImplementsTypeNamesFromJsdoc } from '../utils/extract-implements-type-names';
 import { findIncompatibleProperties, findMissingProperties } from '../utils/find-properties';
 
-type InterfaceInfo = {
-  readonly name: string;
-  readonly node: InterfaceDeclaration;
-  readonly filePath: string;
-};
-
 export const jsdocRule = ESLintUtils.RuleCreator.withoutDocs({
   meta: {
     type: 'problem',
@@ -40,7 +34,8 @@ export const jsdocRule = ESLintUtils.RuleCreator.withoutDocs({
         const implementsTypeName = extractImplementsTypeNamesFromJsdoc(node, sourceCode);
         if (!implementsTypeName) return;
 
-        const targetInterface = allInterfaces.find(({ name }) => name === implementsTypeName);
+        // NOTE: check if the interface exists
+        const targetInterface = allInterfaces.find(({ name }) => name.text === implementsTypeName);
         if (!targetInterface) {
           context.report({
             node,
@@ -51,7 +46,7 @@ export const jsdocRule = ESLintUtils.RuleCreator.withoutDocs({
         }
 
         const implementationType = parserServices.getTypeAtLocation(node);
-        const interfaceType = checker.getTypeAtLocation(targetInterface.node);
+        const interfaceType = checker.getTypeAtLocation(targetInterface);
 
         // NOTE: check missing properties
         const missingProps = findMissingProperties(implementationType, interfaceType, checker);
@@ -90,21 +85,14 @@ export const jsdocRule = ESLintUtils.RuleCreator.withoutDocs({
   },
 });
 
-const collectAllInterfaces = (program: Program): readonly InterfaceInfo[] => {
+const collectAllInterfaces = (program: Program): readonly InterfaceDeclaration[] => {
   return program
     .getSourceFiles()
     .filter(({ fileName }) => !fileName.includes('node_modules'))
-    .flatMap(({ statements, fileName }) =>
-      statements.reduce<InterfaceInfo[]>((acc, statement) => {
+    .flatMap(({ statements }) =>
+      statements.reduce<InterfaceDeclaration[]>((acc, statement) => {
         if (!isInterfaceDeclaration(statement)) return acc;
-        return [
-          ...acc,
-          {
-            name: statement.name.text,
-            node: statement,
-            filePath: fileName,
-          },
-        ];
+        return [...acc, statement];
       }, []),
     );
 };
