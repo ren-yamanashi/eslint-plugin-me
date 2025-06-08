@@ -92,7 +92,7 @@ type ErrorResponse = {
 
 ## Rule Reference
 
-- [type-implements-interface/jsdoc](./docs/rules/jsdoc.md) - Enforces that TypeScript type aliases implement interfaces specified in JSDoc `@implements` tags.
+- [type-implements-interface/jsdoc](./docs/rules/jsdoc.md)
 
 ## Contributing
 
