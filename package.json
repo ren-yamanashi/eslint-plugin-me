@@ -1,6 +1,7 @@
 {
   "name": "eslint-plugin-type-implements-interface",
   "version": "0.1.0",
+  "description": "An ESLint plugin that checks if TypeScript type aliases properly implement interfaces specified in JSDoc `@implements` tags.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "type": "module",
@@ -40,11 +41,20 @@
   },
   "files": [
     "dist",
-    "src",
-    "!src/__tests__",
     "README.md",
     "LICENSE"
   ],
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin",
+    "typescript"
+  ],
+  "homepage": "https://github.com/ren-yamanashi/eslint-plugin-type-implements-interface#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ren-yamanashi/eslint-plugin-type-implements-interface.git"
+  },
   "author": {
     "name": "ren-yamanashi"
   },
