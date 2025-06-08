@@ -34,7 +34,7 @@ npm i -D eslint-plugin-type-implements-interface
 In `eslint.config.js`:
 
 ```javascript
-import typescriptEslintParser from '@typescript-eslint/parser';
+import tseslintParser from '@typescript-eslint/parser';
 import typeImplementsInterface from 'eslint-plugin-type-implements-interface';
 
 export default [
@@ -42,7 +42,7 @@ export default [
   {
     // set up typescript-eslint
     languageOptions: {
-      parser: typescriptEslintParser,
+      parser: tseslintParser,
       parserOptions: {
         project: true,
         sourceType: 'module',
