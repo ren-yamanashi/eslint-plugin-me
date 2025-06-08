@@ -113,6 +113,18 @@ ruleTester.run('function types', jsdocRule, {
           }
         `,
     },
+    {
+      name: 'nested function types',
+      code: `
+          interface MyInterface {
+            prop: (fn: (x: string) => number) => boolean;
+          }
+          /** @implements {MyInterface} */
+          type MyType = {
+            prop: (fn: (x: string) => number) => boolean;
+          }
+        `,
+    },
   ],
   invalid: [
     {

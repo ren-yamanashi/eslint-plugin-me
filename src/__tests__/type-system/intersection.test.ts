@@ -41,6 +41,21 @@ ruleTester.run('intersection types', jsdocRule, {
           }
         `,
     },
+    {
+      name: 'union of intersections',
+      code: `
+          interface A { a: string; }
+          interface B { b: number; }
+          interface C { c: boolean; }
+          interface MyInterface {
+            prop: (A & B) | (A & C);
+          }
+          /** @implements {MyInterface} */
+          type MyType = {
+            prop: (A & B) | (A & C);
+          }
+        `,
+    },
   ],
   invalid: [
     {
