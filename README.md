@@ -1,48 +1,103 @@
 # eslint-plugin-type-implements-interface
 
-## Unsupported
+An ESLint plugin that checks if TypeScript type aliases properly implement interfaces specified in JSDoc `@implements` tags.
 
-### Generics
+## Overview
 
-```ts
-interface GenericInterface<T> {
-  prop: T;
+This plugin performs static analysis to verify that TypeScript type aliases fulfill interface contracts.
+
+```typescript
+interface User {
+  id: number;
+  name: string;
 }
 
 /**
- * @implements {GenericInterface<string>} // ❌ Unsupported
+ * @implements {User}
  */
-type MyType = {
-  prop: string;
+type Student = {
+  id: number;
+  name: string;
+  // Additional properties are allowed
+  email: string;
 };
 ```
 
-### Interface binding
+## Installation
 
-```ts
-interface FirstInterface {
-  firstProp: string;
+```bash
+npm i -D eslint-plugin-type-implements-interface
+```
+
+### Flat Config
+
+In `eslint.config.js`:
+
+```javascript
+import typescriptEslintParser from '@typescript-eslint/parser';
+import typeImplementsInterface from 'eslint-plugin-type-implements-interface';
+
+export default [
+  // other settings...
+  {
+    // set up typescript-eslint
+    languageOptions: {
+      parser: typescriptEslintParser,
+      parserOptions: {
+        project: true,
+        sourceType: 'module',
+      },
+    },
+  },
+  {
+    plugins: {
+      'type-implements-interface': typeImplementsInterface,
+    },
+  },
+  {
+    rules: {
+      'type-implements-interface/jsdoc': 'error',
+    },
+  },
+];
+```
+
+## Example
+
+```typescript
+// Define an interface
+interface ApiResponse {
+  status: number;
+  message: string;
 }
-interface SecondInterface {
-  secondProp: number;
-}
+
 /**
- * @implements {FirstInterface & SecondInterface} // ❌ Unsupported
+ * @implements {ApiResponse}
  */
-type MyType = {
-  firstProp: string;
-  secondProp: number;
+// ✅ This type correctly implements the ApiResponse interface
+type SuccessResponse = {
+  status: 200;
+  message: string;
+};
+
+/**
+ * @implements {ApiResponse}
+ */
+// ❌ This type does not implement the ApiResponse interface correctly
+//    (missing 'message' property)
+type ErrorResponse = {
+  status: 404 | 500;
 };
 ```
 
-### Importing from libraries
+## Rule Reference
 
-```ts
-import { InterfaceFromLibrary } from 'some-library';
-/**
- * @implements {InterfaceFromLibrary} // ❌ Unsupported
- */
-type MyType = {
-  prop: string;
-};
-```
+- [type-implements-interface/jsdoc](./docs/rules/jsdoc.md) - Enforces that TypeScript type aliases implement interfaces specified in JSDoc `@implements` tags.
+
+## Contributing
+
+Welcome
+
+## License
+
+MIT License
