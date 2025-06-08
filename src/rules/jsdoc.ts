@@ -1,6 +1,6 @@
 import { ESLintUtils } from '@typescript-eslint/utils';
 import { InterfaceDeclaration, Node, Program } from 'typescript';
-import { SYMBOL_FLAGS } from '../constants/ts-internal-flags';
+import { SYNTAX_KINDS } from '../constants/ts-internal-flags';
 import { extractImplementsTypeNamesFromJsdoc } from '../utils/extract-implements-type-names';
 import { findIncompatibleProperties, findMissingProperties } from '../utils/find-properties';
 
@@ -18,6 +18,8 @@ export const jsdocRule = ESLintUtils.RuleCreator.withoutDocs({
         "Interface '{{interfaceName}}' specified in @implements tag was not found in the project",
       wrongType:
         "Property '{{propertyName}}' has type '{{actualType}}' but interface '{{interfaceName}}' expects '{{expectedType}}'",
+      unsupportedGeneric:
+        "Generic interfaces are not supported. Interface '{{interfaceName}}' contains generic type parameters.",
     },
     schema: [],
   },
@@ -34,10 +36,18 @@ export const jsdocRule = ESLintUtils.RuleCreator.withoutDocs({
         const implementsTypeName = extractImplementsTypeNamesFromJsdoc(node, sourceCode);
         if (!implementsTypeName) return;
 
-        // NOTE: check if the interface exists
-        // Extract base interface name (remove generic type parameters)
-        const baseInterfaceName = extractBaseInterfaceName(implementsTypeName);
-        const targetInterface = allInterfaces.find(({ name }) => name.text === baseInterfaceName);
+        // NOTE: Check for generic type usage (not supported)
+        if (implementsTypeName.includes('<')) {
+          context.report({
+            node,
+            messageId: 'unsupportedGeneric',
+            data: { interfaceName: implementsTypeName },
+          });
+          return;
+        }
+
+        // NOTE: Check if the interface exists
+        const targetInterface = allInterfaces.find(({ name }) => name.text === implementsTypeName);
         if (!targetInterface) {
           context.report({
             node,
@@ -47,10 +57,22 @@ export const jsdocRule = ESLintUtils.RuleCreator.withoutDocs({
           return;
         }
 
-        const implementationType = parserServices.getTypeAtLocation(node);
+        // NOTE: Check if the interface itself has generic type parameters (not supported)
+        if (targetInterface.typeParameters?.length) {
+          context.report({
+            node,
+            messageId: 'unsupportedGeneric',
+            data: { interfaceName: implementsTypeName },
+          });
+          return;
+        }
+
+        // NOTE: Get types using the correct TypeScript API
+        const tsNode = parserServices.esTreeNodeToTSNodeMap.get(node);
+        const implementationType = checker.getTypeAtLocation(tsNode);
         const interfaceType = checker.getTypeAtLocation(targetInterface);
 
-        // NOTE: check missing properties
+        // NOTE: Check missing properties
         const missingProps = findMissingProperties(implementationType, interfaceType, checker);
         for (const prop of missingProps) {
           context.report({
@@ -64,7 +86,7 @@ export const jsdocRule = ESLintUtils.RuleCreator.withoutDocs({
           });
         }
 
-        // NOTE: check incompatible properties
+        // NOTE: Check incompatible properties
         const incompatibleProps = findIncompatibleProperties(
           implementationType,
           interfaceType,
@@ -88,30 +110,38 @@ export const jsdocRule = ESLintUtils.RuleCreator.withoutDocs({
 });
 
 /**
- * Extract base interface name from generic type specification
- * @param typeName - Type name that might include generic parameters (e.g., "MyInterface<string>")
- * @returns Base interface name without generic parameters (e.g., "MyInterface")
+ * Collect all interface declarations from the program
+ * @param program - TypeScript program
+ * @returns Array of interface declarations with their names
  */
-const extractBaseInterfaceName = (typeName: string): string => {
-  const genericIndex = typeName.indexOf('<');
-  return genericIndex === -1 ? typeName : typeName.substring(0, genericIndex);
-};
-
-const collectAllInterfaces = (program: Program): readonly InterfaceDeclaration[] => {
+const collectAllInterfaces = (program: Program): InterfaceDeclaration[] => {
   return program
     .getSourceFiles()
-    .filter(({ fileName }) => !fileName.includes('node_modules'))
-    .flatMap(({ statements }) =>
-      statements.reduce<InterfaceDeclaration[]>((acc, statement) => {
-        if (!isInterfaceDeclaration(statement)) return acc;
-        return [...acc, statement];
-      }, []),
+    .filter(
+      ({ isDeclarationFile, fileName }) => !isDeclarationFile || fileName.includes('node_modules'),
+    )
+    .reduce<InterfaceDeclaration[]>(
+      (interfaces, sourceFile) => [...interfaces, ...collectInterfacesFromNode(sourceFile)],
+      [],
     );
+};
+
+/**
+ * Recursively collect interface declarations from a node
+ * @param node - TypeScript node to traverse
+ * @returns Array of interface declarations found in the node
+ */
+const collectInterfacesFromNode = (node: Node): InterfaceDeclaration[] => {
+  return node
+    .getChildren()
+    .reduce<
+      InterfaceDeclaration[]
+    >((acc, child) => [...acc, ...collectInterfacesFromNode(child)], isInterfaceDeclaration(node) ? [node] : []);
 };
 
 const isInterfaceDeclaration = (node: Node): node is InterfaceDeclaration => {
   // NOTE: In order not to make it dependent on the typescript library, it defines its own unions.
   //       Therefore, the type information structures do not match.
   // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
-  return node.kind === SYMBOL_FLAGS.INTERFACE_DECLARATION;
+  return node.kind === SYNTAX_KINDS.INTERFACE_DECLARATION;
 };

@@ -56,7 +56,7 @@ export const findIncompatibleProperties = (
             checker.isTypeAssignableTo(reqProp.type, implProp.type)
           );
         }
-        // NOTE: For non-Union types, only allow normal assignability
+        // NOTE: For non-Union types, use standard assignability check
         return checker.isTypeAssignableTo(implProp.type, reqProp.type);
       })();
 
