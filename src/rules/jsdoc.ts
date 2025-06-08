@@ -117,9 +117,7 @@ export const jsdocRule = ESLintUtils.RuleCreator.withoutDocs({
 const collectAllInterfaces = (program: Program): InterfaceDeclaration[] => {
   return program
     .getSourceFiles()
-    .filter(
-      ({ isDeclarationFile, fileName }) => !isDeclarationFile || fileName.includes('node_modules'),
-    )
+    .filter(({ fileName }) => !fileName.includes('node_modules'))
     .reduce<InterfaceDeclaration[]>(
       (interfaces, sourceFile) => [...interfaces, ...collectInterfacesFromNode(sourceFile)],
       [],
