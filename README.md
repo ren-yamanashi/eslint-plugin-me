@@ -4,4 +4,3 @@
 
 - Generics
 - Interface binding
-- readonly properties

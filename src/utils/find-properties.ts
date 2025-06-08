@@ -1,8 +1,10 @@
-import { Type, TypeChecker, TypeFlags } from 'typescript';
+import { Declaration, Type, TypeChecker } from 'typescript';
+import { SYNTAX_KINDS, TYPE_FLAGS } from '../constants/ts-internal-flags';
 
 type PropertyInfo = {
   name: string;
   type: Type;
+  isReadonly: boolean;
 };
 
 /**
@@ -45,11 +47,9 @@ export const findIncompatibleProperties = (
       const implProp = implProps.find(({ name }) => name === reqProp.name);
       if (!implProp) return acc; // skip if property is not implemented
 
-      // NOTE: Check if the interface type is a Union type
-      const isInterfaceUnion = !!(reqProp.type.flags & TypeFlags.Union);
-
       const isCompatible = (() => {
-        if (isInterfaceUnion) {
+        if (reqProp.isReadonly && !implProp.isReadonly) return false;
+        if (isInterfaceUnion(reqProp.type)) {
           // NOTE: For Union types, allow partial matches (implementation can be a subset)
           return (
             checker.isTypeAssignableTo(implProp.type, reqProp.type) ||
@@ -66,7 +66,7 @@ export const findIncompatibleProperties = (
         ...acc,
         {
           name: reqProp.name,
-          expected: checker.typeToString(reqProp.type),
+          expected: `${reqProp.isReadonly ? 'readonly ' : ''}${checker.typeToString(reqProp.type)}`,
           actual: checker.typeToString(implProp.type),
         },
       ];
@@ -84,9 +84,33 @@ const extractTypeProperties = (type: Type, checker: TypeChecker): PropertyInfo[]
         {
           name: symbol.getName(),
           type: checker.getTypeOfSymbolAtLocation(symbol, declaration),
+          isReadonly: isReadonlyProperty(declaration),
         },
       ];
     }
     return acc; // skip if no declaration found
   }, []);
+};
+
+const isReadonlyProperty = (declaration: Declaration): boolean => {
+  const modifier: unknown =
+    'modifiers' in declaration &&
+    Array.isArray(declaration.modifiers) &&
+    declaration.modifiers.length
+      ? declaration.modifiers[0]
+      : null;
+  return (
+    typeof modifier === 'object' &&
+    modifier !== null &&
+    'kind' in modifier &&
+    typeof modifier.kind === 'number' &&
+    modifier.kind === SYNTAX_KINDS.READONLY_KEYWORD
+  );
+};
+
+const isInterfaceUnion = (type: Type): boolean => {
+  // NOTE: In order not to make it dependent on the typescript library, it defines its own unions.
+  //       Therefore, the type information structures do not match.
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+  return type.flags === TYPE_FLAGS.UNION;
 };
