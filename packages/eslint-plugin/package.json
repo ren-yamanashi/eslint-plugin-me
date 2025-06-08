@@ -1,0 +1,49 @@
+{
+  "name": "@type-implements-interface/eslint-plugin",
+  "version": "0.1.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "require": {
+      "types": "./dist/index.d.cts",
+      "default": "./dist/index.cjs"
+    },
+    "import": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsdown --config tsdown.config.js",
+    "test": "vitest --run",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint --fix --config ../../eslint.config.js",
+    "fmt": "prettier --write \"src/**/*.{js,ts,json}\" --ignore-path ../../.gitignore"
+  },
+  "dependencies": {
+    "@typescript-eslint/parser": "catalog:core",
+    "@typescript-eslint/utils": "catalog:core",
+    "@type-implements-interface/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@typescript-eslint/rule-tester": "catalog:test",
+    "typescript": "catalog:core",
+    "tsdown": "catalog:build",
+    "vitest": "catalog:test"
+  },
+  "files": [
+    "dist",
+    "src",
+    "!src/__tests__",
+    "README.md"
+  ],
+  "author": {
+    "name": "ren-yamanashi"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT"
+}

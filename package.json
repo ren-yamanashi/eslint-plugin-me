@@ -2,64 +2,64 @@
   "name": "eslint-plugin-type-implements-interface",
   "version": "0.1.0",
   "description": "An ESLint plugin that checks if TypeScript type aliases properly implement interfaces specified in JSDoc `@implements` tags.",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "type": "module",
   "exports": {
-    "types": "./dist/index.d.ts",
-    "require": {
-      "types": "./dist/index.d.cts",
-      "default": "./dist/index.cjs"
+    "./ts-plugin": {
+      "types": "./packages/ts-server-plugin/index.d.ts",
+      "require": {
+        "types": "./packages/ts-server-plugin/dist/index.d.cts",
+        "default": "./packages/ts-server-plugin/dist/index.cjs"
+      },
+      "import": {
+        "types": "./packages/ts-server-plugin/dist/index.d.ts",
+        "default": "./packages/ts-server-plugin/dist/index.js"
+      }
     },
-    "import": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+    "./eslint-plugin": {
+      "types": "./packages/eslint-plugin/index.d.ts",
+      "require": {
+        "types": "./packages/eslint-plugin/dist/index.d.cts",
+        "default": "./packages/eslint-plugin/dist/index.cjs"
+      },
+      "import": {
+        "types": "./packages/eslint-plugin/dist/index.d.ts",
+        "default": "./packages/eslint-plugin/dist/index.js"
+      }
     }
   },
   "scripts": {
-    "build": "tsdown --config tsdown.config.js",
-    "test": "vitest --run",
-    "lint": "eslint --fix --config eslint.config.js",
-    "fmt": "prettier --write \"**/*.{js,json,ts}\" --ignore-path .gitignore",
-    "typecheck": "tsc --noEmit",
-    "pack": "pnpm run build && npm pack"
+    "build": "nx run-many --target=build --all",
+    "lint": "nx run-many --target=lint --all",
+    "fmt": "nx run-many --target=fmt --all",
+    "typecheck": "nx run-many --target=typecheck --all",
+    "test": "nx run-many --target=test --all"
   },
   "devDependencies": {
-    "@eslint/js": "^9.28.0",
-    "@types/node": "^22.15.30",
-    "@typescript-eslint/rule-tester": "^8.33.1",
-    "eslint": "9.28.0",
-    "prettier": "4.0.0-alpha.12",
-    "tsdown": "^0.12.7",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.33.1",
-    "vitest": "^3.2.2"
+    "@eslint/js": "catalog:lint",
+    "@types/node": "catalog:others",
+    "eslint": "catalog:lint",
+    "prettier": "catalog:fmt",
+    "tsdown": "catalog:build",
+    "typescript": "catalog:core",
+    "typescript-eslint": "catalog:lint",
+    "vitest": "catalog:test",
+    "nx": "catalog:others"
   },
-  "dependencies": {
-    "@typescript-eslint/parser": "^8.33.1",
-    "@typescript-eslint/utils": "^8.33.1"
-  },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
   "keywords": [
     "eslint",
     "eslintplugin",
     "eslint-plugin",
-    "typescript"
+    "typescript",
+    "jsdoc",
+    "implements"
   ],
   "homepage": "https://github.com/ren-yamanashi/eslint-plugin-type-implements-interface#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ren-yamanashi/eslint-plugin-type-implements-interface.git"
+    "url": "https://github.com/ren-yamanashi/eslint-plugin-type-implements-interface"
   },
   "author": {
     "name": "ren-yamanashi"
-  },
-  "publishConfig": {
-    "access": "public"
   },
   "license": "MIT"
 }

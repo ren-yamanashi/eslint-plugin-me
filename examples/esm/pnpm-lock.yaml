@@ -230,7 +230,7 @@ packages:
     engines: {node: '>=10'}
 
   eslint-plugin-type-implements-interface@file:../../eslint-plugin-type-implements-interface-0.1.0.tgz:
-    resolution: {integrity: sha512-EHqn8Dce5M8q0x8LFp1ho96ghIDueh9xLTe3DAsss8QVaxN1W8a3H7laRsO0cQ2zIYR23UU8zAw6FCq7sx6LOg==, tarball: file:../../eslint-plugin-type-implements-interface-0.1.0.tgz}
+    resolution: {integrity: sha512-7iC7pOQgrKfPuJJCS7BgcZtNk4GElQXU9OSL+opXw9heBrh6jrtjQorwbOcISgScE7Whk9viGyRr4eifWR6uew==, tarball: file:../../eslint-plugin-type-implements-interface-0.1.0.tgz}
     version: 0.1.0
 
   eslint-scope@8.3.0:

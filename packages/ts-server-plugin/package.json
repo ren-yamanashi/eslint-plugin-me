@@ -1,0 +1,42 @@
+{
+  "name": "@type-implements-interface/ts-server-plugin",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "require": {
+      "types": "./dist/index.d.cts",
+      "default": "./dist/index.cjs"
+    },
+    "import": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsdown --config tsdown.config.js",
+    "test": "vitest --run",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint --fix --config ../../eslint.config.js",
+    "fmt": "prettier --write \"src/**/*.{js,ts,json}\" --ignore-path ../../.gitignore"
+  },
+  "dependencies": {
+    "@type-implements-interface/core": "workspace:*",
+    "typescript": "catalog:core"
+  },
+  "devDependencies": {
+    "tsdown": "catalog:build",
+    "vitest": "catalog:test"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "author": {
+    "name": "ren-yamanashi"
+  },
+  "license": "MIT"
+}

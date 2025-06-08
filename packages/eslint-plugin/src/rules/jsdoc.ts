@@ -1,8 +1,11 @@
+import {
+  SYNTAX_KINDS,
+  extractImplementsTypeNamesFromJsdoc,
+  findIncompatibleProperties,
+  findMissingProperties,
+} from '@type-implements-interface/core';
 import { ESLintUtils } from '@typescript-eslint/utils';
 import { InterfaceDeclaration, Node, Program } from 'typescript';
-import { SYNTAX_KINDS } from '../constants/ts-internal-flags';
-import { extractImplementsTypeNamesFromJsdoc } from '../utils/extract-implements-type-names';
-import { findIncompatibleProperties, findMissingProperties } from '../utils/find-properties';
 
 export const jsdocRule = ESLintUtils.RuleCreator.withoutDocs({
   meta: {
