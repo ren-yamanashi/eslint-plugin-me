@@ -34,3 +34,15 @@ type MyType = {
   secondProp: number;
 };
 ```
+
+### Importing from libraries
+
+```ts
+import { InterfaceFromLibrary } from 'some-library';
+/**
+ * @implements {InterfaceFromLibrary} // ❌ Unsupported
+ */
+type MyType = {
+  prop: string;
+};
+```
