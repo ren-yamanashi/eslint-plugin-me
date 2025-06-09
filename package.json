@@ -6,14 +6,27 @@
   "types": "./dist/index.d.ts",
   "type": "module",
   "exports": {
-    "types": "./dist/index.d.ts",
-    "require": {
-      "types": "./dist/index.d.cts",
-      "default": "./dist/index.cjs"
-    },
-    "import": {
+    ".": {
       "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      },
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "./ts-server-plugin": {
+      "types": "./dist/ts-server-plugin.d.ts",
+      "require": {
+        "types": "./dist/ts-server-plugin.d.cts",
+        "default": "./dist/ts-server-plugin.cjs"
+      },
+      "import": {
+        "types": "./dist/ts-server-plugin.d.ts",
+        "default": "./dist/ts-server-plugin.js"
+      }
     }
   },
   "scripts": {

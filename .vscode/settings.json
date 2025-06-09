@@ -4,6 +4,14 @@
 
   // lint settings
   "eslint.useFlatConfig": true,
+  "markdownlint.config": {
+    "MD001": false,
+    "MD024": false,
+    "MD029": false,
+    "MD033": false,
+    "MD034": false,
+    "MD041": false
+  },
 
   // auto format setting
   "editor.codeActionsOnSave": ["source.organizeImports", "source.fixAll.eslint"],

@@ -15,7 +15,12 @@
     "strict": true,
     "skipLibCheck": true,
     "module": "ESNext",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "plugins": [
+      {
+        "name": "eslint-plugin-type-implements-import/ts-server-plugin"
+      }
+    ]
   },
   "exclude": ["node_modules"]
 }
