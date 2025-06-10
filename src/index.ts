@@ -1,8 +1,10 @@
 import { name, version } from '../package.json';
 import { typeImplementsInterface } from './rules/type-implements-interface';
+import { noForeach } from './rules/no-foreach';
 
 const rules = {
   'type-implements-interface': typeImplementsInterface,
+  'no-foreach': noForeach,
 };
 
 const configs = {
@@ -15,6 +17,7 @@ const configs = {
     },
     rules: {
       'me/type-implements-interface': 'error',
+      'me/no-foreach': 'error',
     },
   },
 };
