@@ -1,4 +1,4 @@
-# eslint-plugin-me
+# @reyn/eslint-plugin-me
 
 ## Rule
 
