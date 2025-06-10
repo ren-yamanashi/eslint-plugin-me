@@ -1,20 +1,20 @@
 import { name, version } from '../package.json';
-import { jsdocRule } from './rules/jsdoc';
+import { typeImplementsInterface } from './rules/type-implements-interface';
 
 const rules = {
-  jsdoc: jsdocRule,
+  'type-implements-interface': typeImplementsInterface,
 };
 
 const configs = {
   all: {
     plugins: {
-      'type-implements-interface': {
+      me: {
         meta: { name, version },
         rules,
       },
     },
     rules: {
-      'type-implements-interface/jsdoc': 'error',
+      'me/type-implements-interface': 'error',
     },
   },
 };
