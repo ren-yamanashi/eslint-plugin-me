@@ -19,20 +19,24 @@ export const noForeach = ESLintUtils.RuleCreator.withoutDocs({
     return {
       CallExpression(node) {
         if (
-          node.callee.type === AST_NODE_TYPES.MemberExpression &&
-          node.callee.property.type === AST_NODE_TYPES.Identifier &&
-          node.callee.property.name === 'forEach'
+          node.callee.type !== AST_NODE_TYPES.MemberExpression ||
+          node.callee.property.type !== AST_NODE_TYPES.Identifier ||
+          node.callee.property.name !== 'forEach'
         ) {
-          const tsNode = parserServices.esTreeNodeToTSNodeMap.get(node.callee.object);
-          const type = checker.getTypeAtLocation(tsNode);
-
-          if (checker.isArrayType(type) || checker.isTupleType(type)) {
-            context.report({
-              node,
-              messageId: 'noForeach',
-            });
-          }
+          return;
         }
+
+        const tsNode = parserServices.esTreeNodeToTSNodeMap.get(node.callee.object);
+        const type = checker.getTypeAtLocation(tsNode);
+
+        if (!checker.isArrayType(type) && !checker.isTupleType(type)) {
+          return;
+        }
+
+        context.report({
+          node,
+          messageId: 'noForeach',
+        });
       },
     };
   },
