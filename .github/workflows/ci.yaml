@@ -1,7 +1,7 @@
-name: eslint-plugin-type-implements-interface CI
+name: eslint-plugin-me CI
 on:
   push:
-    branches: [main]
+    branches: [main, release]
   pull_request:
     branches: [main]
 
@@ -52,3 +52,26 @@ jobs:
         run: pnpm run typecheck
       - name: Lint
         run: pnpm run lint
+  publish:
+    if: github.ref == 'refs/heads/release'
+    needs: integration
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Download package artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: packages
+          path: .
+      - name: Setup Node.js 22.16.0
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+          registry-url: 'https://registry.npmjs.org'
+      - name: Publish
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
