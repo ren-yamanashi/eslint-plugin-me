@@ -52,6 +52,18 @@ jobs:
         run: pnpm run typecheck
       - name: Lint
         run: pnpm run lint
+      - name: Build package
+        run: pnpm run build
+      - name: Upload package artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: |
+            dis
+            package.json
+            README.md
+            LICENSE
+          retention-days: 1
   publish:
     if: github.ref == 'refs/heads/release'
     needs: integration
