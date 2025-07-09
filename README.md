@@ -2,6 +2,8 @@
 
 A collection of ESLint rules that enforce functional programming patterns and immutable coding practices.
 
+This plugin is designed for use myself.
+
 ## Rules
 
 ### Core Rules
@@ -57,9 +59,7 @@ export default [
 ```javascript
 import me from '@reyn/eslint-plugin-me';
 
-export default [
-  me.configs.all,
-];
+export default [me.configs.all];
 ```
 
 ## Contributing
